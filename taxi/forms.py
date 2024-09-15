@@ -1,6 +1,5 @@
 from django import forms
 from .models import Driver
-import re
 
 
 class DriverLicenseUpdateForm(forms.ModelForm):
@@ -9,19 +8,21 @@ class DriverLicenseUpdateForm(forms.ModelForm):
         fields = ["license_number"]
 
     def clean_license_number(self):
-        license_number = self.cleaned_data.get("license_number")
+        license_number = self.cleaned_data["license_number"]
 
         if len(license_number) != 8:
             raise forms.ValidationError(
-                "The license number must contain 8 characters."
-            )
+                "The license number must be 8 characters long.")
 
-        if not re.match(r"^[A-Z]{3}", license_number):
+        if (
+                not license_number[:3].isalpha() or not
+                license_number[:3].isupper()
+        ):
             raise forms.ValidationError(
                 "The first 3 characters must be capital letters."
             )
 
-        if not re.match(r"[0-9]{5}$", license_number):
+        if not license_number[3:].isdigit():
             raise forms.ValidationError(
                 "The last 5 characters must be numbers."
             )

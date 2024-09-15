@@ -67,7 +67,7 @@ class CarDetailView(LoginRequiredMixin, generic.DetailView):
 
 class CarCreateView(LoginRequiredMixin, generic.CreateView):
     model = Car
-    fields = "__all__"
+    fields = ["model", "manufacturer", "drivers"]
     widgets = {
         "drivers": forms.CheckboxSelectMultiple,
     }
@@ -98,9 +98,7 @@ class DriverCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("taxi:driver-list")
 
     def form_valid(self, form):
-        form.instance.set_password(
-            form.cleaned_data["password"]
-        )
+        form.instance.set_password(form.cleaned_data["password"])
         return super().form_valid(form)
 
 
