@@ -58,11 +58,14 @@ class ManufacturerDeleteView(LoginRequiredMixin, generic.DeleteView):
 class CarListView(LoginRequiredMixin, generic.ListView):
     model = Car
     paginate_by = 5
-    queryset = Car.objects.all().select_related("manufacturer")
+    queryset = Car.objects.all().select_related(
+        "manufacturer"
+    ).prefetch_related("drivers")
 
 
 class CarDetailView(LoginRequiredMixin, generic.DetailView):
     model = Car
+    queryset = Car.objects.prefetch_related("drivers")
 
 
 class CarCreateView(LoginRequiredMixin, generic.CreateView):
@@ -124,22 +127,23 @@ class DriverLicenseUpdateView(LoginRequiredMixin, generic.UpdateView):
 class DriverListView(LoginRequiredMixin, generic.ListView):
     model = Driver
     paginate_by = 5
+    queryset = Driver.objects.prefetch_related("cars")
 
 
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
     model = Driver
-    queryset = Driver.objects.all().prefetch_related("cars__manufacturer")
+    queryset = Driver.objects.prefetch_related("cars__manufacturer")
 
 
 @login_required
 def add_driver_to_car(request, pk):
-    car = get_object_or_404(Car, pk=pk)
+    car = get_object_or_404(Car.objects.prefetch_related("drivers"), pk=pk)
     car.drivers.add(request.user)
     return redirect("taxi:car-detail", pk=pk)
 
 
 @login_required
 def remove_driver_from_car(request, pk):
-    car = get_object_or_404(Car, pk=pk)
+    car = get_object_or_404(Car.objects.prefetch_related("drivers"), pk=pk)
     car.drivers.remove(request.user)
     return redirect("taxi:car-detail", pk=pk)
