@@ -11,10 +11,11 @@ class DriverLicenseUpdateForm(forms.ModelForm):
         max_length=8,
         validators=[
             RegexValidator(
-                regex=r'^[A-Z]{3}\d{5}$',
+                regex=r"^[A-Z]{3}\d{5}$",
                 message=(
                     "The license number must consist of 8 characters: "
-                    "the first 3 characters are capital letters, the last 5 characters are numbers."
+                    "the first 3 characters are capital letters, "
+                    "the last 5 characters are numbers."
                 )
             )
         ]
@@ -30,7 +31,13 @@ class DriverCreateForm(forms.ModelForm):
 
     class Meta:
         model = Driver
-        fields = ["username", "first_name", "last_name", "license_number", "password"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "license_number",
+            "password"
+        ]
 
     def clean_license_number(self):
         license_number = self.cleaned_data.get("license_number")
@@ -39,7 +46,8 @@ class DriverCreateForm(forms.ModelForm):
         if not re.match(pattern, license_number):
             raise forms.ValidationError(
                 "The driver's license number must consist of 8 characters: "
-                "the first 3 characters are capital letters, the last 5 characters are numbers."
+                "the first 3 characters are capital letters, "
+                "the last 5 characters are numbers."
             )
         return license_number
 
