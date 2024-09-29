@@ -16,8 +16,6 @@ from taxi.views import (
     ManufacturerCreateView,
     ManufacturerUpdateView,
     ManufacturerDeleteView,
-    add_driver_to_car,
-    remove_driver_from_car,
 )
 
 urlpatterns = [
@@ -43,7 +41,7 @@ urlpatterns = [
         name="manufacturer-delete",
     ),
     path("cars/", CarListView.as_view(), name="car-list"),
-    path("cars/<int:pk>/", CarDetailView.as_view(), name="car-detail"),
+    path("cars/<int:pk>/", CarDetailView.as_view(), name="car-detail"),  # Логика добавления/удаления водителя теперь тут
     path("cars/create/", CarCreateView.as_view(), name="car-create"),
     path("cars/<int:pk>/update/", CarUpdateView.as_view(), name="car-update"),
     path("cars/<int:pk>/delete/", CarDeleteView.as_view(), name="car-delete"),
@@ -56,16 +54,6 @@ urlpatterns = [
         "drivers/<int:pk>/delete/",
         DriverDeleteView.as_view(),
         name="driver-delete"
-    ),
-    path(
-        "cars/<int:pk>/add-driver/",
-        add_driver_to_car,
-        name="car-add-driver"
-    ),
-    path(
-        "cars/<int:pk>/remove-driver/",
-        remove_driver_from_car,
-        name="car-remove-driver"
     ),
     path(
         "drivers/<int:pk>/update/",
