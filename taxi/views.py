@@ -100,7 +100,7 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class DriverCreateView(LoginRequiredMixin, generic.CreateView):
     model = Driver
-    forms_class = DriverCreateForm
+    form_class = DriverCreateForm
     template_name = "taxi/driver_form.html"
     success_url = reverse_lazy("taxi:driver-list")
 
@@ -129,16 +129,3 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
     model = Driver
     queryset = Driver.objects.prefetch_related("cars__manufacturer")
-
-    def post(self, request, *args, **kwargs):
-
-        car = self.get_object()
-        user = request.user
-
-        action = request.POST.get("action")
-        if action == "Add":
-            car.drivers.add(user)
-        elif action == "Delete":
-            car.drivers.remove(user)
-
-        return redirect("taxi:car-detail", pk=car.pk)
